@@ -1,0 +1,8 @@
+.vs
+.DS_Store
+
+obj/
+bin/
+
+# volumes data from docker container
+devops/data
