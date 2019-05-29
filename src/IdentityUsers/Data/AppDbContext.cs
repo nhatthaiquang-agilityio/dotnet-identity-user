@@ -12,11 +12,11 @@ namespace IdentityUsers.Data
             //this.Database.Migrate();
         }
 
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        protected override void OnModelCreating(ModelBuilder builder)
         {
-            base.OnModelCreating(modelBuilder);
+            base.OnModelCreating(builder);
         }
 
-        public DbSet<IdentityUsers.Models.Contact> Contacts { get; set; }
+        public DbSet<Models.Contact> Contacts { get; set; }
     }
 }

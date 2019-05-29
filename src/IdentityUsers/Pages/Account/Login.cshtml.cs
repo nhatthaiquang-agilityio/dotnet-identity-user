@@ -48,16 +48,19 @@ namespace IdentityUsers.Pages
             {
                 var result = await _signInManager.PasswordSignInAsync(
                     Input.Email, Input.Password, Input.RememberMe, true);
+
                 if (result.Succeeded)
                 {
                     _logger.LogInformation("User logged in.");
                     return Redirect(returnUrl);
                 }
+
                 if (result.RequiresTwoFactor)
                 {
                     return RedirectToPage("./LoginWith2fa", 
                         new { ReturnUrl = returnUrl, Input.RememberMe });
                 }
+
                 if (result.IsLockedOut)
                 {
                     _logger.LogWarning("User account locked out.");
