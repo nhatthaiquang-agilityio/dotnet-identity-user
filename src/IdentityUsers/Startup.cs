@@ -1,3 +1,4 @@
+using System;
 using IdentityUsers.Data;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -29,8 +30,12 @@ namespace IdentityUsers
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
 
+            var password = Environment.GetEnvironmentVariable("SQLSERVER_SA_PASSWORD");
+            var hostname = Environment.GetEnvironmentVariable("SQLSERVER_HOST");
+            var connectString = $"Server={hostname};Database=master;User Id=sa;Password={password};";
+
             services.AddDbContext<AppDbContext>(options =>
-                options.UseSqlServer(Configuration["ConnectionString"]));
+                options.UseSqlServer(connectString));
 
             services
                 .AddDefaultIdentity<IdentityUser>(options =>

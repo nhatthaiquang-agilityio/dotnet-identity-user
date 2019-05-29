@@ -16,13 +16,4 @@
     <Folder Include="Pages\Account\" />
     <Folder Include="Data\" />
   </ItemGroup>
-
-  <ItemGroup>
-    <Compile Remove="Migrations\20190524081343_PlayBallUser.cs" />
-    <Compile Remove="Migrations\20190524081343_PlayBallUser.Designer.cs" />
-    <Compile Remove="Models\PlayBallUser.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Remove="Data\AppDbContext.json" />
-  </ItemGroup>
 </Project>
