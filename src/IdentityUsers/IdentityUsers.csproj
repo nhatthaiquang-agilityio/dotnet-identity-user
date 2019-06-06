@@ -16,4 +16,7 @@
     <Folder Include="Pages\Account\" />
     <Folder Include="Data\" />
   </ItemGroup>
+  <ItemGroup>
+    <Compile Remove="RazorPageTest\DataAccessLayerTest.cs" />
+  </ItemGroup>
 </Project>
