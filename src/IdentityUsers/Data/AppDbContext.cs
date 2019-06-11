@@ -12,7 +12,7 @@ namespace IdentityUsers.Data
             : base(options)
         {
             this.Database.EnsureCreated();
-            this.Database.Migrate();
+            //this.Database.Migrate();
         }
 
         protected override void OnModelCreating(ModelBuilder builder)
@@ -20,17 +20,17 @@ namespace IdentityUsers.Data
             base.OnModelCreating(builder);
         }
 
-        public DbSet<Models.Contact> Contacts { get; set; }
+        public virtual DbSet<Models.Contact> Contacts { get; set; }
 
         #region snippet1
-        public async Task<List<Contact>> GetContactsAsync()
+        public async virtual Task<List<Contact>> GetContactsAsync()
         {
             return await Contacts.AsNoTracking().ToListAsync();
         }
         #endregion
 
         #region snippet2
-        public async Task<Contact> AddContactAsync(Contact contact)
+        public async virtual Task<Contact> AddContactAsync(Contact contact)
         {
             await Contacts.AddAsync(contact);
             await SaveChangesAsync();
