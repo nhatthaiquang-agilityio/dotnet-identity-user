@@ -1,0 +1,53 @@
+﻿@page
+@model RoomModel
+
+@{
+    ViewData["Title"] = "Room";
+}
+<h1>@ViewData["Title"]</h1>
+
+<div class="row">
+    <span id="OwnerId">@Model.userId</span>
+    <div class="container">
+        <div class="row">
+            &nbsp;
+            My User Id is: <span id="userId">@Model.userId</span>
+        </div>
+        <div class="row">
+            <div class="col-6">&nbsp;</div>
+            <div class="col-6">
+                <ul id="messagesList"></ul>
+            </div>
+        </div>
+        <input type="hidden" id="signalRConnectionId" />
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
+
+
+<script src="~/lib/signalr/signalr.min.js"></script>
+<script>var userId = document.getElementById("OwnerId").innerText;
+    var connection = new signalR.HubConnectionBuilder().withUrl("/NotificationUserHub?userId=" + userId).build();
+
+    //listen to Hub
+    connection.on("sendToUser", (message) => {
+        var msg = message.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+        var li = document.createElement("li");
+        li.textContent = msg;
+        document.getElementById("messagesList").appendChild(li);
+
+    });
+
+    connection.start().catch(function (err) {
+        return console.error(err.toString());
+    }).then(function () {
+        console.log('start connectionId ');
+        // document.getElementById("userId").innerText = userId;
+        connection.invoke('GetConnectionId').then(function (connectionId) {
+            console.log('connectionId is :' + connectionId);
+            document.getElementById('signalRConnectionId').innerHTML = connectionId;
+        })
+    });</script>

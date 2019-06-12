@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using IdentityUsers.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -13,13 +14,16 @@ namespace IdentityUsers.Pages
     {
         private readonly SignInManager<IdentityUser> _signInManager;
         private readonly ILogger<LoginViewModel> _logger;
+        private readonly Service.UserConnectionManager _userConnectionManager;
 
         public LoginModel(
             SignInManager<IdentityUser> signInManager, 
-            ILogger<LoginViewModel> logger)
+            ILogger<LoginViewModel> logger,
+            Service.UserConnectionManager userConnectionManager)
         {
             _signInManager = signInManager;
             _logger = logger;
+            _userConnectionManager = userConnectionManager;
         }
 
         [BindProperty]

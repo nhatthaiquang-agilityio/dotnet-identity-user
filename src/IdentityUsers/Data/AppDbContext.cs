@@ -21,6 +21,7 @@ namespace IdentityUsers.Data
         }
 
         public virtual DbSet<Models.Contact> Contacts { get; set; }
+        public virtual DbSet<Models.UserConnection> UserConnections { get; set; }
 
         #region snippet1
         public async virtual Task<List<Contact>> GetContactsAsync()
