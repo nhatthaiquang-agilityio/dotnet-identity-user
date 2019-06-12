@@ -1,9 +1,12 @@
 using System;
 using IdentityUsers.Data;
+using IdentityUsers.Hubs;
+using IdentityUsers.Service;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -30,9 +33,14 @@ namespace IdentityUsers
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
 
+            var connectString = string.Empty;
             var password = Environment.GetEnvironmentVariable("SQLSERVER_SA_PASSWORD");
             var hostname = Environment.GetEnvironmentVariable("SQLSERVER_HOST");
-            var connectString = $"Server={hostname};Database=master;User Id=sa;Password={password};";
+
+            if(password != null && hostname !=null)
+                connectString = $"Server={hostname};Database=master;User Id=sa;Password={password};";
+            else
+                connectString = Configuration["ConnectionStrings:DefaultConnection"];
 
             services.AddDbContext<AppDbContext>(options =>
                 options.UseSqlServer(connectString));
@@ -56,12 +64,18 @@ namespace IdentityUsers
                 options.AccessDeniedPath = "/Identity/Account/AccessDenied";
             });
 
+            services.AddSignalR();
+
             services.AddMvc()
                 .SetCompatibilityVersion(CompatibilityVersion.Version_2_1)
                 .AddRazorPagesOptions(options =>
                 {
                     options.Conventions.AuthorizeFolder("/Account");
                 });
+
+            // https://dotnetcoretutorials.com/2018/03/20/cannot-consume-scoped-service-from-singleton-a-lesson-in-asp-net-core-di-scopes/
+            // only use addScoped
+            services.AddScoped<IUserConnectionManager, UserConnectionManager>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -81,6 +95,11 @@ namespace IdentityUsers
             app.UseCookiePolicy();
             app.UseAuthentication();
             app.UseMvc();
+            //app.UseIdentity();
+            app.UseSignalR(routes =>
+            {
+               routes.MapHub<NotificationUserHub>("/NotificationUserHub");
+            });
         }
     }
 }
