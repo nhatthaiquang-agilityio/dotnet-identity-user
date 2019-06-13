@@ -8,7 +8,9 @@
 
 <div class="row">
     <table>
-        <tr><td>UserName</td> <td></td></tr>
+        <tr><td>UserName</td> 
+        <td></td>
+        </tr>
     @foreach (var item in Model.Users)
     {
         <tr>
@@ -48,7 +50,9 @@
 
 <script src="~/lib/signalr/signalr.min.js"></script>
 <script>var userId = document.getElementById("userId").innerText;
-    var connection = new signalR.HubConnectionBuilder().withUrl("/NotificationUserHub?userId=" + userId).build();
+
+    var connection = new signalR.HubConnectionBuilder().withUrl(
+        "/NotificationUserHub?userId=" + userId).build();
 
     //listen to Hub
     connection.on("sendToUser", (message) => {
@@ -62,8 +66,6 @@
     connection.start().catch(function (err) {
         return console.error(err.toString());
     }).then(function () {
-        console.log('start connectionId ');
-        // document.getElementById("userId").innerText = userId;
         connection.invoke('GetConnectionId').then(function (connectionId) {
             console.log('connectionId is :' + connectionId);
             document.getElementById('signalRConnectionId').innerHTML = connectionId;

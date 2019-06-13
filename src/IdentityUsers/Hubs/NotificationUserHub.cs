@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Threading.Tasks;
 using IdentityUsers.Service;
+//using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.SignalR;
 
 namespace IdentityUsers.Hubs
 {
+    //[Authorize]
     public class NotificationUserHub : Hub
     {
         private readonly IUserConnectionManager _userConnectionManager;
@@ -14,14 +16,11 @@ namespace IdentityUsers.Hubs
             _userConnectionManager = userConnectionManager;
         }
 
-        public string GetConnectionId()
+        public async Task<string> GetConnectionId()
         {
             var httpContext = this.Context.GetHttpContext();
             var userId = httpContext.Request.Query["userId"];
-
-            Console.WriteLine(Context.ConnectionId);
-            Console.WriteLine(userId);
-            _userConnectionManager.KeepUserConnection(userId, Context.ConnectionId);
+            await _userConnectionManager.KeepUserConnection(userId, Context.ConnectionId);
 
             return Context.ConnectionId;
         }
