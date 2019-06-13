@@ -14,6 +14,7 @@ namespace IdentityUsers.Pages.Account
     {
         private readonly IHubContext<NotificationUserHub> _notificationUserHubContext;
         private readonly IUserConnectionManager _userConnectionManager;
+        private static string userId;
 
         public MessageModel(IHubContext<NotificationUserHub> notificationUserHubContext,
            IUserConnectionManager userConnectionManager)
@@ -22,25 +23,33 @@ namespace IdentityUsers.Pages.Account
             _userConnectionManager = userConnectionManager;
         }
 
-        public void OnGet()
+        public void OnGet(string id)
         {
+
+            if (!string.IsNullOrEmpty(id))
+                userId = id;
+
         }
 
-        public async Task<IActionResult> OnPostAsync([FromForm] string userId, [FromForm] string message)
+        public async Task<IActionResult> OnPostAsync([FromForm] string message)
         {
-            Console.WriteLine(userId);
-            //get the connection from the
-            var connections = _userConnectionManager.GetUserConnections(userId);
-            if (connections != null && connections.Count > 0)
+            if (!string.IsNullOrEmpty(userId))
             {
-                foreach (var connectionId in connections)
+                //get the connection from the
+                var connections = _userConnectionManager.GetUserConnections(userId);
+                if (connections != null && connections.Count > 0)
                 {
-                    //send to user
-                    await _notificationUserHubContext.Clients.Client(connectionId).SendAsync("sendToUser", message);
+                    foreach (var connectionId in connections)
+                    {
+                        //send to user
+                        await _notificationUserHubContext.Clients
+                            .Client(connectionId).SendAsync("sendToUser", message);
+                    }
                 }
-            }
+            } 
 
             return Page();
         }
+
     }
 }

@@ -21,4 +21,7 @@
     <Folder Include="Hubs\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Compile Remove="Pages\Account\Message.cs" />
+  </ItemGroup>
 </Project>

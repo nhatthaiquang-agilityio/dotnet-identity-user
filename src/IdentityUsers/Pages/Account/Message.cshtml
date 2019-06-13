@@ -1,4 +1,5 @@
-﻿@page
+﻿@page "{id?}"
+
 @model MessageModel
 @{
 }
@@ -10,10 +11,9 @@
             <div class="col-6">&nbsp;</div>
             <div class="col-6">
                 Message to userId:
-                <input type="text" id="userId" name="userId" />
                 <input type="text" id="message" name="message" />
                 <input type="submit" id="sendButton" value="Send Message" />
             </div>
         </div>
     </form>
-</div>
+</div>  

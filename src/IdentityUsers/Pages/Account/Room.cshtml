@@ -7,12 +7,30 @@
 <h1>@ViewData["Title"]</h1>
 
 <div class="row">
-    <span id="OwnerId">@Model.userId</span>
+    <table>
+        <tr><td>UserName</td> <td></td></tr>
+    @foreach (var item in Model.Users)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.UserName)
+            </td>
+            <td>
+                <a asp-page="/Account/Message" asp-route-id="@item.Id">Start Chat</a>
+            </td>
+        </tr>
+    }
+    </table>
+</div>
+<br>
+<br>
+<div class="row">
     <div class="container">
         <div class="row">
             &nbsp;
             My User Id is: <span id="userId">@Model.userId</span>
         </div>
+        <input type="hidden" id="sendUserId" value="@Model.userId"/>
         <div class="row">
             <div class="col-6">&nbsp;</div>
             <div class="col-6">
@@ -29,7 +47,7 @@
 
 
 <script src="~/lib/signalr/signalr.min.js"></script>
-<script>var userId = document.getElementById("OwnerId").innerText;
+<script>var userId = document.getElementById("userId").innerText;
     var connection = new signalR.HubConnectionBuilder().withUrl("/NotificationUserHub?userId=" + userId).build();
 
     //listen to Hub

@@ -1,11 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.Extensions.Logging;
 
 namespace IdentityUsers.Pages.Account
 {
@@ -16,6 +14,9 @@ namespace IdentityUsers.Pages.Account
 
         public string userId;
 
+        [BindProperty]
+        public List<IdentityUser> Users { get; set; }
+
         public RoomModel(
             UserManager<IdentityUser> userManager,
             SignInManager<IdentityUser> signInManager)
@@ -23,10 +24,6 @@ namespace IdentityUsers.Pages.Account
             _userManager = userManager;
             _signInManager = signInManager;
         }
-
-        //public void OnGet()
-        //{
-        //}
 
         public async Task<IActionResult> OnGetAsync()
         {
@@ -39,12 +36,11 @@ namespace IdentityUsers.Pages.Account
 
             userId = user.Id;
 
-            //save user connection 
+            // get list connected users(exclude myself)
+            Users = _userManager.Users.Where(u => u.Id != userId).ToList();
 
-           
             return Page();
         }
-
 
     }
 }
