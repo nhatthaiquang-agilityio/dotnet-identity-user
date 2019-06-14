@@ -10,7 +10,6 @@ namespace IdentityUsers.Pages.Account
     public class RoomModel : PageModel
     {
         private readonly UserManager<IdentityUser> _userManager;
-        private readonly SignInManager<IdentityUser> _signInManager;
 
         public string userId;
 
@@ -18,11 +17,9 @@ namespace IdentityUsers.Pages.Account
         public List<IdentityUser> Users { get; set; }
 
         public RoomModel(
-            UserManager<IdentityUser> userManager,
-            SignInManager<IdentityUser> signInManager)
+            UserManager<IdentityUser> userManager)
         {
             _userManager = userManager;
-            _signInManager = signInManager;
         }
 
         public async Task<IActionResult> OnGetAsync()
@@ -38,7 +35,6 @@ namespace IdentityUsers.Pages.Account
 
             // get list connected users(exclude myself)
             Users = _userManager.Users.Where(u => u.Id != userId).ToList();
-
             return Page();
         }
 

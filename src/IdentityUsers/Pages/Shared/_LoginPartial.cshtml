@@ -1,16 +1,18 @@
 ﻿@using Microsoft.AspNetCore.Identity
 @inject SignInManager<IdentityUser> SignInManager
 @inject UserManager<IdentityUser> UserManager
+@inject IdentityUsers.Service.IUserConnectionManager UserConnectionManager
 
 @if (SignInManager.IsSignedIn(User))
 {
-    <form asp-area="Identity" asp-page="/Account/Logout" 
-            asp-route-returnUrl="@Url.Page("/Index", new { area = "" })" 
-            method="post" id="logoutForm" class="navbar-right">
+    <form asp-area="Identity" asp-page="/Account/Logout"
+          asp-route-returnUrl="@Url.Page("/Index", new { area = "" })"
+          method="post" id="logoutForm" class="navbar-right">
         <ul class="nav navbar-nav navbar-right">
             <li>
+                <input type="hidden" id="token" value="@UserConnectionManager.Token(@UserManager.GetUserName(User))" />
                 <a asp-area="Identity" asp-page="/Account/Index" title="Manage">
-                Hello @UserManager.GetUserName(User)!
+                    Hello @UserManager.GetUserName(User)!
                 </a>
             </li>
             <li>

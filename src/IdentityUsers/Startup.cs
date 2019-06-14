@@ -1,7 +1,9 @@
 using System;
+using System.Threading.Tasks;
 using IdentityUsers.Data;
 using IdentityUsers.Hubs;
 using IdentityUsers.Service;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -10,11 +12,14 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.IdentityModel.Tokens;
 
 namespace IdentityUsers
 {
     public class Startup
     {
+        public static readonly SymmetricSecurityKey SecurityKey = new SymmetricSecurityKey(Guid.NewGuid().ToByteArray());
+
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
@@ -36,7 +41,7 @@ namespace IdentityUsers
             var password = Environment.GetEnvironmentVariable("SQLSERVER_SA_PASSWORD");
             var hostname = Environment.GetEnvironmentVariable("SQLSERVER_HOST");
 
-            if(password != null && hostname !=null)
+            if (password != null && hostname != null)
                 connectString = $"Server={hostname};Database=master;User Id=sa;Password={password};";
             else
                 connectString = Configuration["ConnectionStrings:DefaultConnection"];
@@ -56,8 +61,59 @@ namespace IdentityUsers
                 .AddEntityFrameworkStores<AppDbContext>()
                 .AddDefaultTokenProviders();
 
+            services.AddAuthentication(options =>
+                {
+                    // Identity made Cookie authentication the default.
+                    // However, we want JWT Bearer Auth to be the default.
+                    //options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                    //options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+                })
+                .AddJwtBearer(options =>
+                {
+                    // Configure JWT Bearer Auth to expect our security key
+                    options.TokenValidationParameters =
+                        new TokenValidationParameters
+                        {
+                            LifetimeValidator = (before, expires, token, param) =>
+                            {
+                                return expires > DateTime.UtcNow;
+                            },
+                            ValidateAudience = false,
+                            ValidateIssuer = false,
+                            ValidateActor = false,
+                            ValidateLifetime = true,
+                            IssuerSigningKey = SecurityKey
+                        };
+
+                    // We have to hook the OnMessageReceived event in order to
+                    // allow the JWT authentication handler to read the access
+                    // token from the query string when a WebSocket or
+                    // Server-Sent Events request comes in.
+                    options.Events = new JwtBearerEvents
+                    {
+                        OnMessageReceived = context =>
+                        {
+                            var accessToken = context.Request.Query["access_token"];
+
+                            // If the request is for our hub...
+                            var path = context.HttpContext.Request.Path;
+                            if (!string.IsNullOrEmpty(accessToken) &&
+                                (path.StartsWithSegments("/NotificationUserHub")))
+                            {
+                                // Read the token out of the query string
+                                context.Token = accessToken;
+                            }
+                            return Task.CompletedTask;
+                        }
+                    };
+                });
+
             services.ConfigureApplicationCookie(options =>
             {
+                // Cookie settings
+                options.Cookie.HttpOnly = true;
+                options.ExpireTimeSpan = TimeSpan.FromMinutes(5);
+
                 options.LoginPath = "/Identity/Account/Login";
                 options.LogoutPath = "/Identity/Account/Logout";
                 options.AccessDeniedPath = "/Identity/Account/AccessDenied";
@@ -95,9 +151,9 @@ namespace IdentityUsers
             app.UseAuthentication();
             app.UseMvc();
 
-            app.UseSignalR(routes =>
+            app.UseSignalR(hubs =>
             {
-               routes.MapHub<NotificationUserHub>("/NotificationUserHub");
+                hubs.MapHub<NotificationUserHub>("/NotificationUserHub");
             });
         }
     }

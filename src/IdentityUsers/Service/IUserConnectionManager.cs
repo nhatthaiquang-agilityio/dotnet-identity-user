@@ -8,5 +8,6 @@ namespace IdentityUsers.Service
         Task KeepUserConnection(string userId, string connectionId);
         Task RemoveUserConnection(string connectionId);
         List<string> GetUserConnections(string userId);
+        string Token(string userId);
     }
 }

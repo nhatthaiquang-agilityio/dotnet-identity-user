@@ -8,7 +8,7 @@
 
 <div class="row">
     <table>
-        <tr><td>UserName</td> 
+        <tr><td>UserName</td>
         <td></td>
         </tr>
     @foreach (var item in Model.Users)
@@ -49,10 +49,12 @@
 
 
 <script src="~/lib/signalr/signalr.min.js"></script>
-<script>var userId = document.getElementById("userId").innerText;
+<script>
+    var userId = document.getElementById("userId").innerText;
+    var loginToken = document.getElementById("token").value;
 
     var connection = new signalR.HubConnectionBuilder().withUrl(
-        "/NotificationUserHub?userId=" + userId).build();
+        "/NotificationUserHub?userId=" + userId, { accessTokenFactory: () => loginToken }).build();
 
     //listen to Hub
     connection.on("sendToUser", (message) => {

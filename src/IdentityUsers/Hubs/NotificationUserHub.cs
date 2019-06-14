@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Threading.Tasks;
 using IdentityUsers.Service;
-//using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.SignalR;
 
 namespace IdentityUsers.Hubs
 {
-    //[Authorize]
+    [Authorize]
     public class NotificationUserHub : Hub
     {
         private readonly IUserConnectionManager _userConnectionManager;
