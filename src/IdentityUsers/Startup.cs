@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using IdentityUsers.Data;
 using IdentityUsers.Hubs;
 using IdentityUsers.Service;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -61,12 +62,10 @@ namespace IdentityUsers
                 .AddEntityFrameworkStores<AppDbContext>()
                 .AddDefaultTokenProviders();
 
-            services.AddAuthentication(options =>
-                {
-                    // Identity made Cookie authentication the default.
-                    // However, we want JWT Bearer Auth to be the default.
-                    //options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-                    //options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            services.AddAuthentication()
+                .AddCookie(options => {
+                    options.LoginPath = "/Account/Unauthorized/";
+                    options.AccessDeniedPath = "/Account/Forbidden/";
                 })
                 .AddJwtBearer(options =>
                 {

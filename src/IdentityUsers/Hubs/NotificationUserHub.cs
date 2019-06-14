@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Threading.Tasks;
 using IdentityUsers.Service;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.SignalR;
 
 namespace IdentityUsers.Hubs
 {
-    [Authorize]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public class NotificationUserHub : Hub
     {
         private readonly IUserConnectionManager _userConnectionManager;

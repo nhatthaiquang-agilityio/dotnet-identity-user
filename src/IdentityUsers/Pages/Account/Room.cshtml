@@ -52,7 +52,6 @@
 <script>
     var userId = document.getElementById("userId").innerText;
     var loginToken = document.getElementById("token").value;
-
     var connection = new signalR.HubConnectionBuilder().withUrl(
         "/NotificationUserHub?userId=" + userId, { accessTokenFactory: () => loginToken }).build();
 
