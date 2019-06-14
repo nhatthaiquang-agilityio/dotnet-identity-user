@@ -1,0 +1,22 @@
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IdentityUsers", "IdentityUsers\IdentityUsers.csproj", "{D913FEAE-418A-4C52-AC9D-B0CB9C797C85}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RazorPageTest", "RazorPageTest\RazorPageTest.csproj", "{60300A42-CAA3-4392-9D44-1483842C1279}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{D913FEAE-418A-4C52-AC9D-B0CB9C797C85}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D913FEAE-418A-4C52-AC9D-B0CB9C797C85}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D913FEAE-418A-4C52-AC9D-B0CB9C797C85}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D913FEAE-418A-4C52-AC9D-B0CB9C797C85}.Release|Any CPU.Build.0 = Release|Any CPU
+		{60300A42-CAA3-4392-9D44-1483842C1279}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{60300A42-CAA3-4392-9D44-1483842C1279}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{60300A42-CAA3-4392-9D44-1483842C1279}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{60300A42-CAA3-4392-9D44-1483842C1279}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal

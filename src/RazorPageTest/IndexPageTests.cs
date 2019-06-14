@@ -1,9 +1,7 @@
 using System.Threading.Tasks;
 using IdentityUsers.Hubs;
-using IdentityUsers.Pages;
 using IdentityUsers.Pages.Account;
 using IdentityUsers.Service;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.SignalR;
 using Moq;
