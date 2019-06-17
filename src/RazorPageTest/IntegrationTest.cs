@@ -1,5 +1,4 @@
-﻿using System.Net;
-using System.Net.Http;
+﻿using System.Net.Http;
 using System.Threading.Tasks;
 using Xunit;
 
@@ -23,5 +22,26 @@ namespace RazorPageTest
             // Assert
             response.EnsureSuccessStatusCode();
         }
+
+        [Fact]
+        public async Task Index_Get_Room()
+        {
+            // Act
+            var response = await _client.GetAsync("/Account/Room");
+
+            // Assert
+            response.EnsureSuccessStatusCode();
+        }
+
+        [Fact]
+        public async Task Index_Get_Message()
+        {
+            // Act
+            var response = await _client.GetAsync("/Account/Message");
+
+            // Assert
+            response.EnsureSuccessStatusCode();
+        }
+
     }
 }
