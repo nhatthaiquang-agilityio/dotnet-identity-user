@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
@@ -31,10 +32,18 @@ namespace IdentityUsers.Pages.Account
                     $"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
             }
 
+
             userId = user.Id;
 
-            // get list connected users(exclude myself)
-            Users = _userManager.Users.Where(u => u.Id != userId).ToList();
+            try
+            {
+                // get list connected users(exclude myself)
+                Users = _userManager.Users.Where(u => u.Id != userId).ToList();
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+            }
             return Page();
         }
 
