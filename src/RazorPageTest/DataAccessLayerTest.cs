@@ -35,7 +35,7 @@ namespace RazorPageTest
             {
 
                 // Arrange
-                var expectedContact = new Contact() 
+                var expectedContact = new Contact
                 { 
                     Name = "John", City = "Chicago" 
                 };

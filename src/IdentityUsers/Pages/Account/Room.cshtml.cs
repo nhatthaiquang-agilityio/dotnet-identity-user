@@ -35,15 +35,8 @@ namespace IdentityUsers.Pages.Account
             // set userId for template
             userId = user.Id;
 
-            try
-            {
-                // get list connected users(exclude myself)
-                Users = _userManager.Users.Where(u => u.Id != userId).ToList();
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e);
-            }
+            // get list connected users(exclude myself)
+            Users = _userManager.Users.Where(u => u.Id != userId).ToList();
 
             return Page();
         }

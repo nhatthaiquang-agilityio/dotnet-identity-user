@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Security.Claims;
 using System.Threading;
 using System.Threading.Tasks;
@@ -45,6 +46,7 @@ namespace RazorPageTest
         [Fact]
         public async Task OnGetAsync_ReturnAsPageResult()
         {
+            // create user context
             HttpContext context = new DefaultHttpContext();
             context.User = new ClaimsPrincipal(new ClaimsIdentity(new List<Claim>
             {
@@ -58,15 +60,23 @@ namespace RazorPageTest
 
             // Arrange
             mockUserStore.Setup(x => x.FindByIdAsync("123", CancellationToken.None))
-                .ReturnsAsync(new IdentityUser()
+                .ReturnsAsync(new IdentityUser
                 {
                     UserName = "test@email.com",
                     Id = "123"
                 });
-
-
-            var userManager = new UserManager<IdentityUser>(
+           
+            // Arrange.
+            var users = new List<IdentityUser>
+            {
+                new IdentityUser { Id="123", UserName = "test@email.com" },
+                new IdentityUser { Id="124", UserName = "user@test.com" }
+            }.AsQueryable();
+            var mockUserManager = new Mock<UserManager<IdentityUser>>(
                 mockUserStore.Object, null, null, null, null, null, null, null, null);
+            mockUserManager.Setup(x => x.Users).Returns(users);
+            mockUserManager.Setup(x => x.GetUserAsync(context.User))
+                .Returns(Task.FromResult(new IdentityUser { Id = "123", UserName = "test@email.com" }));
 
             // https://docs.microsoft.com/en-us/aspnet/core/test/razor-pages-tests?view=aspnetcore-2.1#unit-tests-of-the-page-model-methods
             var modelState = new ModelStateDictionary();
@@ -79,7 +89,8 @@ namespace RazorPageTest
                 ViewData = viewData
             };
 
-            var pageModel = new RoomModel(userManager) {
+            //set context into Room Page
+            var pageModel = new RoomModel(mockUserManager.Object) {
                 PageContext = pageContext
             };
 
