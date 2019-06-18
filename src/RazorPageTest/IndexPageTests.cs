@@ -4,6 +4,8 @@ using System.Security.Claims;
 using System.Threading;
 using System.Threading.Tasks;
 using IdentityUsers.Hubs;
+using IdentityUsers.Models;
+using IdentityUsers.Pages;
 using IdentityUsers.Pages.Account;
 using IdentityUsers.Service;
 using Microsoft.AspNetCore.Http;
@@ -14,6 +16,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.AspNetCore.SignalR;
+using Microsoft.Extensions.Logging;
 using Moq;
 using Xunit;
 
@@ -65,7 +68,7 @@ namespace RazorPageTest
                     UserName = "test@email.com",
                     Id = "123"
                 });
-           
+
             // Arrange.
             var users = new List<IdentityUser>
             {
@@ -96,6 +99,33 @@ namespace RazorPageTest
 
             // Act
             var result = await pageModel.OnGetAsync();
+
+            // Assert
+            Assert.IsType<PageResult>(result);
+        }
+
+        [Fact]
+        public async Task OnPostAsync_Login_ReturnAsPageResult()
+        {
+            var mockUserStore = new Mock<IUserStore<IdentityUser>>();
+            var mockUserManager = new Mock<UserManager<IdentityUser>>(
+                mockUserStore.Object, null, null, null, null, null, null, null, null);
+            var contextAccessor = new Mock<IHttpContextAccessor>();
+            var userPrincipalFactory = new Mock<IUserClaimsPrincipalFactory<IdentityUser>>();
+            var signInManager = new SignInManager<IdentityUser>(
+                mockUserManager.Object, contextAccessor.Object, userPrincipalFactory.Object, null, null, null);
+            var mockLogger = new Mock<ILogger<LoginViewModel>>();
+
+            //set context into Login Page
+            var pageModel = new LoginModel(signInManager, mockLogger.Object);
+            pageModel.Input = new LoginViewModel
+            {
+                Email = "test@gmail.com",
+                Password = "testing@123"
+            };
+
+            // Act
+            var result = await pageModel.OnPostAsync("~/");
 
             // Assert
             Assert.IsType<PageResult>(result);
