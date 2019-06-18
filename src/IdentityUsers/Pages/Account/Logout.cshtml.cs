@@ -32,10 +32,8 @@ namespace IdentityUsers.Pages
             {
                 return Redirect(returnUrl);
             }
-            else
-            {
-                return Page();
-            }
+
+            return Page();
         }
     }
 }

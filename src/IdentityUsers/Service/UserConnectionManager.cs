@@ -27,7 +27,7 @@ namespace IdentityUsers.Service
         public async Task KeepUserConnection(string userId, string connectionId)
         {
             // save connectionId by userId
-            var userConnection = new UserConnection()
+            var userConnection = new UserConnection
             {
                 UserId = userId,
                 ConnectionId = connectionId,

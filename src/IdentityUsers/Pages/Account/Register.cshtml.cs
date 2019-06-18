@@ -44,7 +44,7 @@ namespace IdentityUsers.Pages
                 var user = new IdentityUser
                 {
                     UserName = Input.Email,
-                    Email = Input.Email,
+                    Email = Input.Email
                 };
 
                 var result = await _userManager.CreateAsync(user, Input.Password);
@@ -52,7 +52,7 @@ namespace IdentityUsers.Pages
                 {
                     _logger.LogInformation("New user created.");
 
-                    await _signInManager.SignInAsync(user, isPersistent: false);
+                    await _signInManager.SignInAsync(user, false);
                     return LocalRedirect(returnUrl);
                 }
 

@@ -57,8 +57,8 @@ namespace IdentityUsers.Pages
 
                 if (result.RequiresTwoFactor)
                 {
-                    return RedirectToPage("./LoginWith2fa", 
-                        new { ReturnUrl = returnUrl, Input.RememberMe });
+                    return RedirectToPage("./LoginWith2fa",
+                        (ReturnUrl: returnUrl, Input.RememberMe));
                 }
 
                 if (result.IsLockedOut)
@@ -66,11 +66,9 @@ namespace IdentityUsers.Pages
                     _logger.LogWarning("User account locked out.");
                     return RedirectToPage("./Lockout");
                 }
-                else
-                {
-                    ModelState.AddModelError(string.Empty, "Invalid login attempt.");
-                    return Page();
-                }
+
+                ModelState.AddModelError(string.Empty, "Invalid login attempt.");
+                return Page();
             }
 
             // If we got this far, something failed, redisplay form

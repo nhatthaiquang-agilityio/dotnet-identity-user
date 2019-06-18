@@ -20,8 +20,8 @@ namespace IdentityUsers.Data
             base.OnModelCreating(builder);
         }
 
-        public virtual DbSet<Models.Contact> Contacts { get; set; }
-        public virtual DbSet<Models.UserConnection> UserConnections { get; set; }
+        public virtual DbSet<Contact> Contacts { get; set; }
+        public virtual DbSet<UserConnection> UserConnections { get; set; }
 
         #region snippet1
         public async virtual Task<List<Contact>> GetContactsAsync()
@@ -47,14 +47,14 @@ namespace IdentityUsers.Data
 
         public static List<Contact> GetSeedingContacts()
         {
-            return new List<Contact>()
+            return new List<Contact>
             {
-                new Contact()
+                new Contact
                 {
                     Name = "Nhat",
                     Address = "Nui Thanh",
                     City = "Da Nang"
-                },
+                }
             };
         }
     }
