@@ -32,7 +32,7 @@ namespace IdentityUsers.Pages.Account
                     $"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
             }
 
-
+            // set userId for template
             userId = user.Id;
 
             try
@@ -44,6 +44,7 @@ namespace IdentityUsers.Pages.Account
             {
                 Console.WriteLine(e);
             }
+
             return Page();
         }
 

@@ -1,4 +1,5 @@
-﻿using System.Net.Http;
+﻿using System;
+using System.Net.Http;
 using System.Threading.Tasks;
 using Xunit;
 
@@ -31,6 +32,8 @@ namespace RazorPageTest
 
             // Assert
             response.EnsureSuccessStatusCode();
+
+            Assert.Equal("/Identity/Account/Login", response.RequestMessage.RequestUri.LocalPath);
         }
 
         [Fact]
@@ -41,7 +44,21 @@ namespace RazorPageTest
 
             // Assert
             response.EnsureSuccessStatusCode();
+
+            Assert.Equal("/Identity/Account/Login", response.RequestMessage.RequestUri.LocalPath);
         }
 
+        [Fact]
+        public async Task Index_Get_Contact()
+        {
+            // Act
+            var response = await _client.GetAsync("/Contact");
+
+            // Assert
+            response.EnsureSuccessStatusCode();
+
+            Assert.Equal("/Contact", response.RequestMessage.RequestUri.LocalPath);
+            Assert.Equal("/Contact", response.RequestMessage.RequestUri.AbsolutePath);
+        }
     }
 }
