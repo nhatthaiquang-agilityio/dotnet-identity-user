@@ -15,7 +15,7 @@ namespace IdentityUsers.Pages
         private readonly ILogger<LoginViewModel> _logger;
 
         public LoginModel(
-            SignInManager<IdentityUser> signInManager, 
+            SignInManager<IdentityUser> signInManager,
             ILogger<LoginViewModel> logger)
         {
             _signInManager = signInManager;
@@ -43,7 +43,6 @@ namespace IdentityUsers.Pages
         public async Task<IActionResult> OnPostAsync(string returnUrl = null)
         {
             returnUrl = returnUrl ?? Url.Content("~/");
-
             if (ModelState.IsValid)
             {
                 var result = await _signInManager.PasswordSignInAsync(

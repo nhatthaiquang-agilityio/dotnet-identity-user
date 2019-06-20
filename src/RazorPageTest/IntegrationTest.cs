@@ -101,18 +101,19 @@ namespace RazorPageTest
         [Fact]
         public async Task Index_Post_Login()
         {
-            var url = "https://localhost/Identity/Account/Login?ReturnUrl=%2FAccount%2FRoom";
+            var uri = "/Identity/Account/Login?ReturnUrl=%2FAccount%2FRoom";
             await Index_Post_Register();
 
-            var verificationToken = GetVerificationToken(_client, url);
+            var verificationToken = GetVerificationToken(_client, uri);
             var formData = new Dictionary<string, string>
             {
                 {"Input.Email", "testing@gmail.com"},
                 {"Input.Password", "testing@123"},
+                {"Input.RememberMe", "true"},
                 {"__RequestVerificationToken", verificationToken}
             };
             var content = new FormUrlEncodedContent(formData);
-            var response = await _client.PostAsync(url, content);
+            var response = await _client.PostAsync(uri, content);
 
             response.EnsureSuccessStatusCode();
         }
