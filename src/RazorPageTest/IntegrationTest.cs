@@ -70,30 +70,51 @@ namespace RazorPageTest
 
             // Assert
             response.EnsureSuccessStatusCode();
-
         }
 
         [Fact]
         public async Task Index_Post_Register()
         {
-            var verificationToken = GetVerificationToken(_client, "https://localhost/Identity/Account/Register");
+            var uri = "/Identity/Account/Register";
+            var verificationToken = GetVerificationToken(_client, uri);
 
+            var res = await _client.GetAsync(uri);
+            res.EnsureSuccessStatusCode();
+
+            //string verificationToken = await AntiForgeryHelper.ExtractAntiForgeryToken(res);
             var formData = new Dictionary<string, string>
-             {
-                {"Email", "testing@gmail.com"},
-                {"Password", "testing@123"},
-                {"__RequestVerificationToken", verificationToken} 
-             };
-
-            var postRequest = new HttpRequestMessage(HttpMethod.Post, "/Identity/Account/Register")
+            {
+                {"Input.Email", "testing@gmail.com"},
+                {"Input.Password", "testing@123"},
+                {"Input.ConfirmPassword", "testing@123"},
+                {"__RequestVerificationToken", verificationToken}
+            };
+            var submision = new HttpRequestMessage(HttpMethod.Post, uri)
             {
                 Content = new FormUrlEncodedContent(formData)
             };
-
-            var response = await _client.SendAsync(postRequest);
+            var response = await _client.SendAsync(submision);
 
             response.EnsureSuccessStatusCode();
-            //var responseString = await response.Content.ReadAsStringAsync();
+        }
+
+        [Fact]
+        public async Task Index_Post_Login()
+        {
+            var url = "https://localhost/Identity/Account/Login?ReturnUrl=%2FAccount%2FRoom";
+            await Index_Post_Register();
+
+            var verificationToken = GetVerificationToken(_client, url);
+            var formData = new Dictionary<string, string>
+            {
+                {"Input.Email", "testing@gmail.com"},
+                {"Input.Password", "testing@123"},
+                {"__RequestVerificationToken", verificationToken}
+            };
+            var content = new FormUrlEncodedContent(formData);
+            var response = await _client.PostAsync(url, content);
+
+            response.EnsureSuccessStatusCode();
         }
 
         private string GetVerificationToken(HttpClient client, string url)
