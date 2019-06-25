@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Xunit;
@@ -73,8 +72,8 @@ namespace RazorPageTest
             response.EnsureSuccessStatusCode();
         }
 
-        [Fact]
-        public async Task Index_Post_Register()
+        //[Fact]
+        public async Task Index_Post_Register(string email)
         {
             var uri = "/Account/Register";
             var verificationToken = GetVerificationToken(_client, uri);
@@ -82,12 +81,11 @@ namespace RazorPageTest
             var res = await _client.GetAsync(uri);
             res.EnsureSuccessStatusCode();
 
-            //string verificationToken = await AntiForgeryHelper.ExtractAntiForgeryToken(res);
             var formData = new Dictionary<string, string>
             {
-                {"Input.Email", "testing@gmail.com"},
-                {"Input.Password", "testing@123456"},
-                {"Input.ConfirmPassword", "testing@123456"},
+                {"Input.Email", email},
+                {"Input.Password", PredefinedData.Password},
+                {"Input.ConfirmPassword", PredefinedData.Password},
                 {"__RequestVerificationToken", verificationToken}
             };
             var submision = new HttpRequestMessage(HttpMethod.Post, uri)
@@ -103,6 +101,8 @@ namespace RazorPageTest
         [Fact]
         public async Task Index_Post_Login()
         {
+            await Index_Post_Register(PredefinedData.Login_Email);
+
             var uri = "/Account/Login?ReturnUrl=/Account/Room";
             var verificationToken = GetVerificationToken(_client, uri);
             var res = await _client.GetAsync(uri);
@@ -110,7 +110,7 @@ namespace RazorPageTest
 
             var formData = new Dictionary<string, string>
             {
-                {"Input.Email", PredefinedData.Email},
+                {"Input.Email", PredefinedData.Login_Email},
                 {"Input.Password", PredefinedData.Password},
                 {"Input.RememberMe", "true"},
                 {"__RequestVerificationToken", verificationToken}
@@ -119,7 +119,8 @@ namespace RazorPageTest
             var response = await _client.PostAsync(uri, content);
 
             response.EnsureSuccessStatusCode();
-            //Assert.Equal(HttpStatusCode.Redirect, response.StatusCode);
+            // Redirect to Account/Room Page
+            Assert.Equal("/Account/Room", response.RequestMessage.RequestUri.AbsolutePath);
         }
 
         private string GetVerificationToken(HttpClient client, string url)

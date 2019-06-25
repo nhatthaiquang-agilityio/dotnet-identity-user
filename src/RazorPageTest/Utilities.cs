@@ -32,8 +32,6 @@ namespace RazorPageTest
             try
             {
                 var result = await userManager.CreateAsync(PredefinedData.Profile, PredefinedData.Password);
-                var user = await userManager.FindByEmailAsync(PredefinedData.Email);
-                Console.WriteLine(user.PasswordHash);
                 if (result.Succeeded)
                 {
                     Console.WriteLine("save user done");
@@ -45,7 +43,6 @@ namespace RazorPageTest
                 Console.WriteLine(e.Message);
             }
                 
-            
             db.SaveChanges();
         }
     }

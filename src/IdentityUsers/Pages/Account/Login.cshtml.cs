@@ -1,6 +1,4 @@
-﻿using System;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using IdentityUsers.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -48,14 +46,10 @@ namespace IdentityUsers.Pages
             
             if (ModelState.IsValid)
             {
-                var users = _signInManager.UserManager.Users.Where(u => u.Id != null).ToList();
                 var result = await _signInManager.PasswordSignInAsync(
-                    Input.Email, Input.Password, Input.RememberMe, true);
+                    Input.Email, Input.Password, Input.RememberMe, false);
 
                 _logger.LogInformation(result.ToString());
-                //Console.WriteLine("Sign In Manager");
-                //Console.WriteLine(users[0].PasswordHash);
-                //Console.WriteLine(result.Succeeded);
 
                 if (result.Succeeded)
                 {
