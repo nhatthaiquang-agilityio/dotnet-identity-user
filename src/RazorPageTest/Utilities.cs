@@ -39,7 +39,6 @@ namespace RazorPageTest
             }
             catch (Exception e)
             {
-                Console.WriteLine("Error Exception");
                 Console.WriteLine(e.Message);
             }
                 

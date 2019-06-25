@@ -3,9 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Mvc.Testing;
 using IdentityUsers.Data;
-using Microsoft.AspNetCore.TestHost;
-using System.IO;
-using Microsoft.DotNet.PlatformAbstractions;
+
 
 namespace RazorPageTest
 {
@@ -15,19 +13,13 @@ namespace RazorPageTest
         {
             // https://docs.microsoft.com/en-us/aspnet/core/fundamentals/configuration/?view=aspnetcore-2.2
             // Add database name for testing
-            builder.ConfigureServices(async services =>
+            builder.ConfigureServices(services =>
             {
-                // Create a new service provider.
-                var serviceProvider = new ServiceCollection()
-                    .AddEntityFrameworkInMemoryDatabase()
-                    .BuildServiceProvider();
-
                 // A database context(ApplicationDbContext) using an in-memory
                 // database for testing.
                 services.AddDbContext<AppDbContext>(options =>
                 {
                     options.UseInMemoryDatabase("test_db");
-                    options.UseInternalServiceProvider(serviceProvider);
                 });
 
                 // Build the service provider.
@@ -42,14 +34,9 @@ namespace RazorPageTest
                     db.Database.EnsureCreated();
 
                     // Seed the database with test data.
-                    await Utilities.SeedDataTest(db);
+                    Utilities.SeedDataTest(db).Wait();
                 }
 
-                // https://docs.microsoft.com/en-us/aspnet/core/test/integration-tests?view=aspnetcore-2.2#how-the-test-infrastructure-infers-the-app-content-root-path
-                var integrationTestsPath = ApplicationEnvironment.ApplicationBasePath;
-                var applicationPath = Path.GetFullPath(
-                    Path.Combine(integrationTestsPath, "../../../../IdentityUsers"));
-                builder.UseSolutionRelativeContentRoot(applicationPath);
             });
 
         }
