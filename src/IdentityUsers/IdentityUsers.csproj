@@ -19,5 +19,9 @@
     <Folder Include="Service\" />
     <Folder Include="wwwroot\lib\signalr\" />
     <Folder Include="Hubs\" />
+    <Folder Include="Migrations\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Remove="Migrations\20190524080118_InitialCreate.cs" />
   </ItemGroup>
 </Project>

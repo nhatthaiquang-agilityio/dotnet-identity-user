@@ -2,8 +2,8 @@ using System;
 using System.Threading.Tasks;
 using IdentityUsers.Data;
 using IdentityUsers.Hubs;
+using IdentityUsers.Models;
 using IdentityUsers.Service;
-using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -51,7 +51,7 @@ namespace IdentityUsers
                 options.UseSqlServer(connectString));
 
             services
-                .AddDefaultIdentity<IdentityUser>(options =>
+                .AddDefaultIdentity<ApplicationUser>(options =>
                 {
                     options.Password.RequireDigit = false;
                     options.Password.RequiredLength = 12;

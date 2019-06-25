@@ -8,7 +8,7 @@ services:
     ports:
       - "1433:1433"
     volumes:
-      - data:/var/opt/mssql
+      - database:/var/opt/mssql
 
   webapp:
     container_name: webapp
@@ -22,4 +22,4 @@ services:
     depends_on:
       - db
 volumes:
-  data:
+  database:

@@ -11,14 +11,14 @@ namespace IdentityUsers.Pages
     [AllowAnonymous]
     public class RegisterModel : PageModel
     {
-        private readonly SignInManager<IdentityUser> _signInManager;
-        private readonly UserManager<IdentityUser> _userManager;
-        private readonly ILogger<IdentityUser> _logger;
+        private readonly SignInManager<ApplicationUser> _signInManager;
+        private readonly UserManager<ApplicationUser> _userManager;
+        private readonly ILogger<ApplicationUser> _logger;
 
         public RegisterModel(
-            UserManager<IdentityUser> userManager,
-            SignInManager<IdentityUser> signInManager,
-            ILogger<IdentityUser> logger)
+            UserManager<ApplicationUser> userManager,
+            SignInManager<ApplicationUser> signInManager,
+            ILogger<ApplicationUser> logger)
         {
             _userManager = userManager;
             _signInManager = signInManager;
@@ -41,12 +41,13 @@ namespace IdentityUsers.Pages
 
             if (ModelState.IsValid)
             {
-                var user = new IdentityUser
+                var user = new ApplicationUser()
                 {
                     UserName = Input.Email,
+                    FirstName = "First",
+                    LastName = "Last",
                     Email = Input.Email
-                };
-
+                }; 
                 var result = await _userManager.CreateAsync(user, Input.Password);
                 if (result.Succeeded)
                 {

@@ -1,4 +1,6 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Linq;
+using System.Threading.Tasks;
 using IdentityUsers.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -11,11 +13,11 @@ namespace IdentityUsers.Pages
     [AllowAnonymous]
     public class LoginModel : PageModel
     {
-        private readonly SignInManager<IdentityUser> _signInManager;
+        private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly ILogger<LoginViewModel> _logger;
 
         public LoginModel(
-            SignInManager<IdentityUser> signInManager,
+            SignInManager<ApplicationUser> signInManager,
             ILogger<LoginViewModel> logger)
         {
             _signInManager = signInManager;
@@ -43,10 +45,17 @@ namespace IdentityUsers.Pages
         public async Task<IActionResult> OnPostAsync(string returnUrl = null)
         {
             returnUrl = returnUrl ?? Url.Content("~/");
+            
             if (ModelState.IsValid)
             {
+                var users = _signInManager.UserManager.Users.Where(u => u.Id != null).ToList();
                 var result = await _signInManager.PasswordSignInAsync(
                     Input.Email, Input.Password, Input.RememberMe, true);
+
+                _logger.LogInformation(result.ToString());
+                //Console.WriteLine("Sign In Manager");
+                //Console.WriteLine(users[0].PasswordHash);
+                //Console.WriteLine(result.Succeeded);
 
                 if (result.Succeeded)
                 {

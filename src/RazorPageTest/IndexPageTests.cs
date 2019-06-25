@@ -59,27 +59,27 @@ namespace RazorPageTest
                 new Claim(ClaimTypes.Role, "Admin")
             }));
 
-            var mockUserStore = new Mock<IUserStore<IdentityUser>>();
+            var mockUserStore = new Mock<IUserStore<ApplicationUser>>();
 
             // Arrange
             mockUserStore.Setup(x => x.FindByIdAsync("123", CancellationToken.None))
-                .ReturnsAsync(new IdentityUser
+                .ReturnsAsync(new ApplicationUser
                 {
                     UserName = "test@email.com",
                     Id = "123"
                 });
 
             // Arrange.
-            var users = new List<IdentityUser>
+            var users = new List<ApplicationUser>
             {
-                new IdentityUser { Id="123", UserName = "test@email.com" },
-                new IdentityUser { Id="124", UserName = "user@test.com" }
+                new ApplicationUser { Id="123", UserName = "test@email.com" },
+                new ApplicationUser { Id="124", UserName = "user@test.com" }
             }.AsQueryable();
-            var mockUserManager = new Mock<UserManager<IdentityUser>>(
+            var mockUserManager = new Mock<UserManager<ApplicationUser>>(
                 mockUserStore.Object, null, null, null, null, null, null, null, null);
             mockUserManager.Setup(x => x.Users).Returns(users);
             mockUserManager.Setup(x => x.GetUserAsync(context.User))
-                .Returns(Task.FromResult(new IdentityUser { Id = "123", UserName = "test@email.com" }));
+                .Returns(Task.FromResult(new ApplicationUser { Id = "123", UserName = "test@email.com" }));
 
             // https://docs.microsoft.com/en-us/aspnet/core/test/razor-pages-tests?view=aspnetcore-2.1#unit-tests-of-the-page-model-methods
             var modelState = new ModelStateDictionary();
@@ -107,12 +107,12 @@ namespace RazorPageTest
         [Fact]
         public async Task OnPostAsync_Login_ReturnAsPageResult()
         {
-            var mockUserStore = new Mock<IUserStore<IdentityUser>>();
-            var mockUserManager = new Mock<UserManager<IdentityUser>>(
+            var mockUserStore = new Mock<IUserStore<ApplicationUser>>();
+            var mockUserManager = new Mock<UserManager<ApplicationUser>>(
                 mockUserStore.Object, null, null, null, null, null, null, null, null);
             var contextAccessor = new Mock<IHttpContextAccessor>();
-            var userPrincipalFactory = new Mock<IUserClaimsPrincipalFactory<IdentityUser>>();
-            var signInManager = new SignInManager<IdentityUser>(
+            var userPrincipalFactory = new Mock<IUserClaimsPrincipalFactory<ApplicationUser>>();
+            var signInManager = new SignInManager<ApplicationUser>(
                 mockUserManager.Object, contextAccessor.Object, userPrincipalFactory.Object, null, null, null);
             var mockLogger = new Mock<ILogger<LoginViewModel>>();
 

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Xunit;
@@ -75,7 +76,7 @@ namespace RazorPageTest
         [Fact]
         public async Task Index_Post_Register()
         {
-            var uri = "/Identity/Account/Register";
+            var uri = "/Account/Register";
             var verificationToken = GetVerificationToken(_client, uri);
 
             var res = await _client.GetAsync(uri);
@@ -85,8 +86,8 @@ namespace RazorPageTest
             var formData = new Dictionary<string, string>
             {
                 {"Input.Email", "testing@gmail.com"},
-                {"Input.Password", "testing@123"},
-                {"Input.ConfirmPassword", "testing@123"},
+                {"Input.Password", "testing@123456"},
+                {"Input.ConfirmPassword", "testing@123456"},
                 {"__RequestVerificationToken", verificationToken}
             };
             var submision = new HttpRequestMessage(HttpMethod.Post, uri)
@@ -96,19 +97,21 @@ namespace RazorPageTest
             var response = await _client.SendAsync(submision);
 
             response.EnsureSuccessStatusCode();
+            Assert.Equal("/", response.RequestMessage.RequestUri.AbsolutePath);
         }
 
         [Fact]
         public async Task Index_Post_Login()
         {
-            var uri = "/Identity/Account/Login?ReturnUrl=%2FAccount%2FRoom";
-            await Index_Post_Register();
-
+            var uri = "/Account/Login?ReturnUrl=/Account/Room";
             var verificationToken = GetVerificationToken(_client, uri);
+            var res = await _client.GetAsync(uri);
+            res.EnsureSuccessStatusCode();
+
             var formData = new Dictionary<string, string>
             {
-                {"Input.Email", "testing@gmail.com"},
-                {"Input.Password", "testing@123"},
+                {"Input.Email", PredefinedData.Email},
+                {"Input.Password", PredefinedData.Password},
                 {"Input.RememberMe", "true"},
                 {"__RequestVerificationToken", verificationToken}
             };
@@ -116,6 +119,7 @@ namespace RazorPageTest
             var response = await _client.PostAsync(uri, content);
 
             response.EnsureSuccessStatusCode();
+            //Assert.Equal(HttpStatusCode.Redirect, response.StatusCode);
         }
 
         private string GetVerificationToken(HttpClient client, string url)
@@ -135,5 +139,6 @@ namespace RazorPageTest
 
             return verificationToken;
         }
+        
     }
 }
