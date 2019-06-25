@@ -72,7 +72,9 @@ namespace RazorPageTest
             response.EnsureSuccessStatusCode();
         }
 
-        //[Fact]
+        [Theory]
+		[InlineData("testing1@gmail.com")]
+		[InlineData("testing2@gmail.com")]
         public async Task Index_Post_Register(string email)
         {
             var uri = "/Account/Register";
