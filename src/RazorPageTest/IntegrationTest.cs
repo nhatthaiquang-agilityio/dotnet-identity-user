@@ -77,7 +77,7 @@ namespace RazorPageTest
 		[InlineData("testing2@gmail.com")]
         public async Task Index_Post_Register(string email)
         {
-            var uri = "/Account/Register";
+            var uri = "/Account/Register?ReturnUrl=/Account/Room";
             var verificationToken = GetVerificationToken(_client, uri);
 
             var res = await _client.GetAsync(uri);
@@ -97,7 +97,8 @@ namespace RazorPageTest
             var response = await _client.SendAsync(submision);
 
             response.EnsureSuccessStatusCode();
-            Assert.Equal("/", response.RequestMessage.RequestUri.AbsolutePath);
+            // Redirect to Account/Room Page
+            Assert.Equal("/Account/Room", response.RequestMessage.RequestUri.AbsolutePath);
         }
 
         [Fact]
