@@ -1,6 +1,9 @@
 # dotnet-identity-user
 ASP.NET Core Razor Pages web apps that use Entity Framework (EF) Core for data access.
-
++ Razor Pages
++ Unit Testing
++ Data Layer Testing
++ Integration Testing
 
 ### Requirements
 + Docker Compose
