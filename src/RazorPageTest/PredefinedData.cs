@@ -2,7 +2,7 @@
 
 namespace RazorPageTest
 {
-    public class PredefinedData
+    public static class PredefinedData
     {
         public static string Password = "YourPassword01!";
         public static string Email = "testing@gmail.com";
