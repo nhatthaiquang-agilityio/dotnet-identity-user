@@ -19,6 +19,7 @@ services:
     environment:
       SQLSERVER_HOST: db
       SQLSERVER_SA_PASSWORD: Your_password123
+      ConnectionString: Server=db;Database=master;User Id=sa;Password=Your_password123;
     depends_on:
       - db
 volumes:

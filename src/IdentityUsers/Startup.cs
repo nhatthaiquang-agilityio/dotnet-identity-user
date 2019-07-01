@@ -38,17 +38,8 @@ namespace IdentityUsers
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
 
-            var connectString = string.Empty;
-            var password = Environment.GetEnvironmentVariable("SQLSERVER_SA_PASSWORD");
-            var hostname = Environment.GetEnvironmentVariable("SQLSERVER_HOST");
-
-            if (password != null && hostname != null)
-                connectString = $"Server={hostname};Database=master;User Id=sa;Password={password};";
-            else
-                connectString = Configuration["ConnectionStrings:DefaultConnection"];
-
             services.AddDbContext<AppDbContext>(options =>
-                options.UseSqlServer(connectString));
+                options.UseSqlServer(Configuration["ConnectionString"]));
 
             services
                 .AddDefaultIdentity<ApplicationUser>(options =>
