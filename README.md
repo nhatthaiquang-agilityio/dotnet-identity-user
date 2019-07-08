@@ -37,11 +37,13 @@ ASP.NET Core Razor Pages web apps that use Entity Framework (EF) Core for data a
 + Register User & Login (IdentityUser)
 
 + Send Message
-    - ![Send Message](./imgs/send-msg.jpg)
+
+    ![Send Message](./imgs/send-msg.jpg)
 
 
 + Receive Message
-    - ![Receive Message](./imgs/room-receive-msg.jpg)
+
+    ![Receive Message](./imgs/room-receive-msg.jpg)
 
 ### Reference
 + [Using Azure SignalR Service](https://docs.microsoft.com/en-us/azure/azure-signalr/signalr-quickstart-dotnet-core)
