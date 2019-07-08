@@ -109,10 +109,14 @@ namespace IdentityUsers
                 options.AccessDeniedPath = "/Identity/Account/AccessDenied";
             });
 
-            services.AddSignalR();
+            // using azure signal R
+            if (Configuration.GetValue<bool>("UseAzureSignalR"))
+                services.AddSignalR().AddAzureSignalR();
+            else
+                services.AddSignalR();
 
             services.AddMvc()
-                .SetCompatibilityVersion(CompatibilityVersion.Version_2_1)
+                .SetCompatibilityVersion(CompatibilityVersion.Version_2_2)
                 .AddRazorPagesOptions(options =>
                 {
                     options.Conventions.AuthorizeFolder("/Account");
@@ -141,10 +145,16 @@ namespace IdentityUsers
             app.UseAuthentication();
             app.UseMvc();
 
-            app.UseSignalR(hubs =>
-            {
-                hubs.MapHub<NotificationUserHub>("/NotificationUserHub");
-            });
+            if (Configuration.GetValue<bool>("UseAzureSignalR"))
+                app.UseAzureSignalR(routes =>
+                {
+                    routes.MapHub<NotificationUserHub>("/NotificationUserHub");
+                });
+            else
+                app.UseSignalR(hubs =>
+                {
+                    hubs.MapHub<NotificationUserHub>("/NotificationUserHub");
+                });
         }
     }
 }
