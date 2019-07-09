@@ -28,11 +28,9 @@
 <br>
 <div class="row">
     <div class="container">
-        <div class="row">
-            &nbsp;
-            My User Id is: <span id="userId">@Model.userId</span>
-        </div>
         <input type="hidden" id="sendUserId" value="@Model.userId"/>
+        <input type="hidden" id="username" value="@Model.userName"/>
+
         <div class="row">
             <div class="col-6">&nbsp;</div>
             <div class="col-6">
@@ -43,32 +41,109 @@
     </div>
 </div>
 
+<div class="container" style="height: calc(100% - 110px);">
+    <div id="messages" style="background-color: whitesmoke; "></div>
+
+    <div class="row">&nbsp;</div>
+    <div class="row">
+        <div class="col-6">Send Message to Room</div>
+        <div class="col-6">
+            <input type="text" id="message" name="message" />
+            <input type="submit" id="sendmessage" value="Send Message" />
+        </div>
+    </div>
+</div>
+
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
 }
 
-
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
 <script src="~/lib/signalr/signalr.min.js"></script>
-<script>
-    var userId = document.getElementById("userId").innerText;
-    var loginToken = document.getElementById("token").value;
-    var connection = new signalR.HubConnectionBuilder().withUrl(
-        "/NotificationUserHub?userId=" + userId, { accessTokenFactory: () => loginToken }).build();
+<script>$(function () {
+        var username = document.getElementById("username").innerText;
+        var messageInput = document.getElementById('message');
+        messageInput.focus();
 
-    //listen to Hub
-    connection.on("sendToUser", (message) => {
-        var msg = message.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
-        var li = document.createElement("li");
-        li.textContent = msg;
-        document.getElementById("messagesList").appendChild(li);
+        function createMessageEntry(encodedName, encodedMsg) {
+            var entry = document.createElement('div');
+            entry.classList.add("message-entry");
 
-    });
+            if (encodedName === "_SYSTEM_") {
+                entry.innerHTML = encodedMsg;
+                entry.classList.add("text-center");
+                entry.classList.add("system-message");
 
-    connection.start().catch(function (err) {
-        return console.error(err.toString());
-    }).then(function () {
-        connection.invoke('GetConnectionId').then(function (connectionId) {
-            console.log('connectionId is :' + connectionId);
-            document.getElementById('signalRConnectionId').innerHTML = connectionId;
-        })
+            } else if (encodedName === "_BROADCAST_") {
+                entry.classList.add("text-center");
+                entry.innerHTML = `<div class="text-center broadcast-message">${encodedMsg}</div>`;
+
+            } else if (encodedName === username) {
+                entry.innerHTML = `<div class="message-avatar pull-right">${encodedName}</div>` +
+                    `<div class="message-content pull-right">${encodedMsg}<div>`;
+
+            } else {
+                entry.innerHTML = `<div class="message-avatar pull-left">${encodedName}</div>` +
+                    `<div class="message-content pull-left">${encodedMsg}<div>`;
+            }
+            return entry;
+        }
+
+        function appendMessage(encodedName, encodedMsg) {
+            var messageEntry = createMessageEntry(encodedName, encodedMsg);
+            var messageBox = document.getElementById('messages');
+            messageBox.appendChild(messageEntry);
+            messageBox.scrollTop = messageBox.scrollHeight;
+        }
+
+        function bindConnectionMessage(connection) {
+            var messageCallback = function (name, message) {
+                if (!message) return;
+                // Html encode display name and message.
+                var encodedMsg = message.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+
+                appendMessage(name, encodedMsg);
+            };
+
+            // Create a function that the hub can call to broadcast messages.
+            connection.on('ReceiveMessageToRoom', messageCallback);
+        }
+
+        function onConnected(connection) {
+            document.getElementById('sendmessage').addEventListener('click', function (event) {
+                console.log("username: ", username);
+                if (username === "") {
+                    username = document.getElementById("username").innerText;
+                    console.log("111 username: ", username);
+                }
+
+                // Call the broadcastMessage method on the hub.
+                if (messageInput.value) {
+                    connection.invoke('ReceiveMessageToRoom', username, messageInput.value);
+                }
+
+                // Clear text box and reset focus for next comment.
+                messageInput.value = '';
+                messageInput.focus();
+                event.preventDefault();
+            });
+        }
+
+        var userId = document.getElementById("sendUserId").innerText;
+        var loginToken = document.getElementById("token").value;
+        var connection = new signalR.HubConnectionBuilder().withUrl(
+            "/NotificationUserHub?userId=" + userId, { accessTokenFactory: () => loginToken }).build();
+
+        connection.start().catch(function (err) {
+            return console.error(err.toString());
+        }).then(function () {
+            connection.invoke('GetConnectionId').then(function (connectionId) {
+                document.getElementById('signalRConnectionId').innerHTML = connectionId;
+            });
+
+            onConnected(connection);
+        });
+
+        bindConnectionMessage(connection);
+
     });</script>

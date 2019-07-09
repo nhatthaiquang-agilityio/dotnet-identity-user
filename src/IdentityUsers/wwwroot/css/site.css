@@ -1,37 +1,72 @@
-/* Please see documentation at https://docs.microsoft.com/aspnet/core/client-side/bundling-and-minification 
-for details on configuring this project to bundle and minify static web assets. */
-body {
-    padding-top: 50px;
-    padding-bottom: 20px;
+﻿html, body {
+    padding: 0;
+    height: 100%;
 }
 
-/* Wrapping element */
-/* Set some basic padding to keep content from hitting the edges */
-.body-content {
-    padding-left: 15px;
-    padding-right: 15px;
-}
-
-/* Carousel */
-.carousel-caption p {
-    font-size: 20px;
-    line-height: 1.4;
-}
-
-/* Make .svg files in the carousel display properly in older browsers */
-.carousel-inner .item img[src$=".svg"] {
+#messages {
     width: 100%;
+    border: 1px solid #ccc;
+    height: calc(100% - 120px);
+    float: none;
+    margin: 0px auto;
+    padding-left: 0px;
+    overflow-y: auto;
 }
 
-/* QR code generator */
-#qrCode {
-    margin: 15px;
+textarea:focus {
+    outline: none !important;
 }
 
-/* Hide/rearrange for smaller screens */
-@media screen and (max-width: 767px) {
-    /* Hide captions */
-    .carousel-caption {
-        display: none;
-    }
+.system-message {
+    background: #87CEFA;
+}
+
+.broadcast-message {
+    display: inline-block;
+    background: yellow;
+    margin: auto;
+    padding: 5px 10px;
+}
+
+.message-entry {
+    overflow: auto;
+    margin: 8px 0;
+}
+
+.message-avatar {
+    display: inline-block;
+    padding: 10px;
+    max-width: 8em;
+    word-wrap: break-word;
+}
+
+.message-content {
+    display: inline-block;
+    background-color: #b2e281;
+    padding: 10px;
+    margin: 0 0.5em;
+    max-width: calc(60%);
+    word-wrap: break-word;
+}
+
+.message-content.pull-left:before {
+    width: 0;
+    height: 0;
+    display: inline-block;
+    float: left;
+    border-top: 10px solid transparent;
+    border-bottom: 10px solid transparent;
+    border-right: 10px solid #b2e281;
+    margin: 15px 0;
+}
+
+.message-content.pull-right:after {
+    width: 0;
+    height: 0;
+    display: inline-block;
+    float: right;
+    border-top: 10px solid transparent;
+    border-bottom: 10px solid transparent;
+    border-left: 10px solid #b2e281;
+    margin: 15px 0;
 }

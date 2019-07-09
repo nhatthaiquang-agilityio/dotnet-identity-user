@@ -37,5 +37,10 @@ namespace IdentityUsers.Hubs
         {
             await Clients.Client(connectionId).SendAsync("sendToUser", message);
         }
+
+        public async Task ReceiveMessageToRoom(string username, string message)
+        {
+            await Clients.All.SendAsync("ReceiveMessageToRoom", username, message);
+        }
     }
 }

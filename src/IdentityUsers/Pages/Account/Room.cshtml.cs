@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
+
 namespace IdentityUsers.Pages.Account
 {
     public class RoomModel : PageModel
@@ -13,12 +14,12 @@ namespace IdentityUsers.Pages.Account
         private readonly UserManager<ApplicationUser> _userManager;
 
         public string userId;
+        public string userName;
 
         [BindProperty]
         public List<ApplicationUser> Users { get; set; }
 
-        public RoomModel(
-            UserManager<ApplicationUser> userManager)
+        public RoomModel(UserManager<ApplicationUser> userManager)
         {
             _userManager = userManager;
         }
@@ -34,12 +35,12 @@ namespace IdentityUsers.Pages.Account
 
             // set userId for template
             userId = user.Id;
+            userName = user.Email;
 
             // get list connected users(exclude myself)
             Users = _userManager.Users.Where(u => u.Id != userId).ToList();
 
             return Page();
         }
-
     }
 }
