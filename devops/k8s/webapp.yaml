@@ -1,0 +1,51 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: chatapp
+    component: webapp
+  name: webapp
+spec:
+  ports:
+  - port: 80
+  selector:
+    app: chatapp
+    component: webapp
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: webapp
+spec:
+  template:
+    metadata:
+      labels:
+        app: chatapp
+        component: webapp
+    spec:
+      containers:
+      - name: webapp
+        image: nhatthai/dotnet-webapp
+        imagePullPolicy: Always
+        env:
+        - name: ASPNETCORE_ENVIRONMENT
+          value: Development
+        - name: ASPNETCORE_URLS
+          value: http://0.0.0.0:80
+        - name: ConnectionString
+          valueFrom:
+            configMapKeyRef:
+              name: externalcfg
+              key: ConnectionString
+        - name: UseAzureSignalR
+          valueFrom:
+            configMapKeyRef:
+              name: externalcfg
+              key: UseAzureSignalR
+        - name: Azure__SignalR__ConnectionString
+          valueFrom:
+            configMapKeyRef:
+              name: externalcfg
+              key: Azure__SignalR__ConnectionString
+        ports:
+        - containerPort: 80
