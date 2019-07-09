@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using IdentityUsers.Models;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
@@ -12,7 +13,14 @@ namespace IdentityUsers.Data
             : base(options)
         {
             this.Database.EnsureCreated();
-            //this.Database.Migrate();
+            try
+            {
+                this.Database.Migrate();
+            }
+            catch (Exception ex)
+            {
+
+            }
         }
 
         protected override void OnModelCreating(ModelBuilder builder)

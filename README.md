@@ -7,7 +7,7 @@ ASP.NET Core Razor Pages web apps that use Entity Framework (EF) Core for data a
 + SignalR on local or Azure
 
 ### Requirements
-+ Docker Compose
++ Docker Compose & Kubernetes
 + ASP NET Core 2.2 & Entity Framework Identity User
 + Sql Server
 + SignR(Chat Message)
@@ -45,5 +45,37 @@ ASP.NET Core Razor Pages web apps that use Entity Framework (EF) Core for data a
 
     ![Receive Message](./imgs/room-receive-msg.jpg)
 
++ Chat Private Message
+
+    ![Send Message](./imgs/Message_1.jpg)
+
+    ![Receive Message](./imgs/Message_2.jpg)
+
+
+### Using Kubernetes on Azure
+------------------------------
++ Install helm
++ Intall helm rbac
+    ```
+    kubectl apply -f helm-rbac.yaml
+
+    helm init --service-account tiller
+
+    helm init --wait
+    ```
+
++ Create Load Balancer on Azure (wait 10 mininutes for public ip address)
+    ```
+    helm install stable/nginx-ingress \
+        --namespace default
+        --set controller.replicaCount=2 \
+        --set rbac.create=false \
+        --set controller.service.externalTrafficPolicy=Local \
+        --set controller.nodeSelector."beta\.kubernetes\.io/os"=linux \
+        --set defaultBackend.nodeSelector."beta\.kubernetes\.io/os"=linux
+    ```
+
+
 ### Reference
 + [Using Azure SignalR Service](https://docs.microsoft.com/en-us/azure/azure-signalr/signalr-quickstart-dotnet-core)
++ [Create an ingress controller in Azure Kubernetes Server(AKS)](https://docs.microsoft.com/en-us/azure/aks/ingress-basic)
