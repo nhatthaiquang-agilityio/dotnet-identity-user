@@ -8,19 +8,18 @@ using Microsoft.AspNetCore.SignalR;
 namespace IdentityUsers.Hubs
 {
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-    public class NotificationUserHub : Hub
+    public class ChatHub : Hub
     {
         private readonly IUserConnectionManager _userConnectionManager;
 
-        public NotificationUserHub(IUserConnectionManager userConnectionManager)
+        public ChatHub(IUserConnectionManager userConnectionManager)
         {
             _userConnectionManager = userConnectionManager;
         }
 
         public async Task<string> GetConnectionId()
         {
-            var httpContext = this.Context.GetHttpContext();
-            var userId = httpContext.Request.Query["userId"];
+            var userId = this.Context.GetHttpContext().Request.Query["userId"];
             await _userConnectionManager.KeepUserConnection(userId, Context.ConnectionId);
 
             return Context.ConnectionId;
@@ -38,9 +37,44 @@ namespace IdentityUsers.Hubs
             await Clients.Client(connectionId).SendAsync("sendToUser", message);
         }
 
+        public async Task SendToUserId(string userId, string message)
+        {
+            if (!string.IsNullOrEmpty(userId))
+            {
+               //get the connection from the
+                var connections = _userConnectionManager.GetUserConnections(userId);
+
+                if (connections != null && connections.Count > 0)
+                {
+                    foreach (var connectionId in connections)
+                    {
+                        var senderId = this.Context.GetHttpContext().Request.Query["userId"];
+
+                        var msgObj = new ObjectMessage(senderId, message);
+
+                        //send to user
+                        await Clients.Client(connectionId).SendAsync("SendToUserId", msgObj);
+                    }
+               }
+            }
+        }
+
         public async Task ReceiveMessageToRoom(string username, string message)
         {
             await Clients.All.SendAsync("ReceiveMessageToRoom", username, message);
         }
     }
+
+    public struct ObjectMessage
+    {
+        public string sender;
+        public string message;
+
+        public ObjectMessage(string strsender, string strmessage)
+        {
+            sender = strsender;
+            message = strmessage;
+        }
+    }
+
 }

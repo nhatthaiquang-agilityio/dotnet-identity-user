@@ -33,20 +33,6 @@ namespace RazorPageTest
         }
 
         [Fact]
-        public async Task OnPostAsync_ReturnAsPageResult()
-        {
-            var hub = new Mock<IHubContext<NotificationUserHub>>();
-            var userManager = new Mock<IUserConnectionManager>();
-            var pageModel = new MessageModel(hub.Object, userManager.Object);
-
-            // Act
-            var result = await pageModel.OnPostAsync("Hello");
-
-            // Assert
-            Assert.IsType<PageResult>(result);
-        }
-
-        [Fact]
         public async Task OnGetAsync_ReturnAsPageResult()
         {
             // create user context

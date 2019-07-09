@@ -88,7 +88,7 @@ namespace IdentityUsers
                             // If the request is for our hub...
                             var path = context.HttpContext.Request.Path;
                             if (!string.IsNullOrEmpty(accessToken) &&
-                                (path.StartsWithSegments("/NotificationUserHub")))
+                                (path.StartsWithSegments("/ChatHub")))
                             {
                                 // Read the token out of the query string
                                 context.Token = accessToken;
@@ -148,12 +148,12 @@ namespace IdentityUsers
             if (Configuration.GetValue<bool>("UseAzureSignalR"))
                 app.UseAzureSignalR(routes =>
                 {
-                    routes.MapHub<NotificationUserHub>("/NotificationUserHub");
+                    routes.MapHub<ChatHub>("/ChatHub");
                 });
             else
                 app.UseSignalR(hubs =>
                 {
-                    hubs.MapHub<NotificationUserHub>("/NotificationUserHub");
+                    hubs.MapHub<ChatHub>("/ChatHub");
                 });
         }
     }

@@ -1,19 +1,138 @@
-﻿@page "{id?}"
-
+﻿@page
 @model MessageModel
-@{
-}
-<div class="container">
-    <div class="row">&nbsp;</div>
-    <form method="post">
 
-        <div class="row">
-            <div class="col-6">&nbsp;</div>
-            <div class="col-6">
-                Message to userId:
-                <input type="text" id="message" name="message" />
-                <input type="submit" id="sendButton" value="Send Message" />
-            </div>
+@{
+    ViewData["Title"] = "Message";
+}
+<h1>@ViewData["Title"]</h1>
+
+
+<div class="container pull-right" >
+    <ul>
+        @foreach (var item in Model.Users)
+        {
+            <li >
+                <a id="chat-user-@item.Id" class="chat-user" data-value="@item.Id" data-username="@item.UserName">
+                    @Html.DisplayFor(modelItem => item.UserName)
+                </a>
+            </li>
+        }
+    </ul>
+</div>
+
+<div class="container pull-left">
+    <input type="hidden" id="userId" value="@Model.userId" />
+    <input type="hidden" id="signalRConnectionId" />
+
+    <div class="row">
+        <div id="messages" style="background-color: whitesmoke; "></div>
+    </div>
+
+    <div class="row">
+        <div class="col-6">&nbsp;</div>
+        Chat with user: <label id="chatWithUser"></label>
+        <div>
+            <input type="text" id="message" name="message" />
+            <input type="submit" id="sendmessage" value="Send Message" />
         </div>
-    </form>
-</div>  
+    </div>
+
+</div>
+
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
+<script src="~/lib/signalr/signalr.min.js"></script>
+<script>$(document).ready(function () {
+        var username = "";
+        var sendToUserId = "";
+        var messageInput = document.getElementById('message');
+        messageInput.focus();
+
+        function createMessageEntry(encodedName, encodedMsg) {
+            var entry = document.createElement('div');
+            entry.classList.add("message-entry");
+
+            if (encodedName === "_SYSTEM_") {
+                entry.innerHTML = encodedMsg;
+                entry.classList.add("text-center");
+                entry.classList.add("system-message");
+
+            } else if (encodedName === "_BROADCAST_") {
+                entry.classList.add("text-center");
+                entry.innerHTML = `<div class="text-center broadcast-message">${encodedMsg}</div>`;
+
+            } else if (encodedName !== "") {
+                entry.innerHTML = `<div class="message-avatar pull-left">${encodedName}</div>` +
+                    `<div class="message-content pull-left">${encodedMsg}<div>`;
+
+            } else {
+                entry.innerHTML = `<div class="message-content pull-right">${encodedMsg}<div>`;
+            }
+            return entry;
+        }
+
+        function appendMessage(encodedName, encodedMsg) {
+            var messageEntry = createMessageEntry(encodedName, encodedMsg);
+            var messageBox = document.getElementById('messages');
+            messageBox.appendChild(messageEntry);
+            messageBox.scrollTop = messageBox.scrollHeight;
+        }
+
+        function bindConnectionMessage(connection) {
+            var messageCallback = function (msgObj) {
+                if (!msgObj) return;
+
+                // Html encode display name and message.
+                var encodedMsg = msgObj.message.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+
+                var senderId = msgObj.sender;
+                var senderName = $("#chat-user-"+ senderId).data("username");
+                appendMessage(senderName, encodedMsg);
+            };
+
+            // Create a function that the hub can call to broadcast messages.
+            connection.on('SendToUserId', messageCallback);
+        }
+
+        function onConnected(connection) {
+            document.getElementById('sendmessage').addEventListener('click', function (event) {
+                // Call the broadcastMessage method on the hub.
+                if (sendToUserId !== "" && messageInput.value) {
+                    connection.invoke('SendToUserId', sendToUserId, messageInput.value);
+
+                    // add text into textarea
+                    appendMessage("", messageInput.value)
+                }
+
+                // Clear text box and reset focus for next comment.
+                messageInput.value = '';
+                messageInput.focus();
+                event.preventDefault();
+            });
+        }
+
+        // start chat with private message
+        $(".chat-user").click(function () {
+            sendToUserId = $(this).data("value");
+            username = $(this).data("username");
+
+            // add text username on top input message
+            $("#chatWithUser").text(username);
+        });
+
+        var userId = document.getElementById("userId").value;
+        var loginToken = document.getElementById("token").value;
+        var connection = new signalR.HubConnectionBuilder().withUrl(
+            "/ChatHub?userId=" + userId, { accessTokenFactory: () => loginToken }).build();
+
+        connection.start().catch(function (err) {
+            return console.error(err.toString());
+        }).then(function () {
+            connection.invoke('GetConnectionId').then(function (connectionId) {
+                document.getElementById('signalRConnectionId').innerHTML = connectionId;
+            });
+
+            onConnected(connection);
+        });
+
+        bindConnectionMessage(connection);
+    });</script>

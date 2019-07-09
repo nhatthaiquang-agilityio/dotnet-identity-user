@@ -2,6 +2,26 @@
     padding: 0;
     height: 100%;
 }
+body {
+    padding-top:50px;
+    padding-bottom:20px
+}
+.body-content{
+    padding-left:15px;
+    padding-right:15px
+}
+
+.pull-right {
+    float: right;
+    width: 25%;
+    display: inline-block;
+}
+
+.pull-left {
+    float: left;
+    width: 75%;
+    display: inline-block;
+}
 
 #messages {
     width: 100%;
@@ -36,8 +56,9 @@ textarea:focus {
 .message-avatar {
     display: inline-block;
     padding: 10px;
-    max-width: 8em;
+    max-width: 12em;
     word-wrap: break-word;
+    font-weight: bold;
 }
 
 .message-content {

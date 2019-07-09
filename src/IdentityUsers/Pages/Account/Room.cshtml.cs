@@ -37,9 +37,6 @@ namespace IdentityUsers.Pages.Account
             userId = user.Id;
             userName = user.Email;
 
-            // get list connected users(exclude myself)
-            Users = _userManager.Users.Where(u => u.Id != userId).ToList();
-
             return Page();
         }
     }
