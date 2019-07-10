@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Identity;
 
 namespace IdentityUsers.Models
 {
-    public class DbInitializer
+    public static class DbInitializer
     {
         public static async Task Initialize(AppDbContext context, UserManager<IdentityUser> userManager)
         {

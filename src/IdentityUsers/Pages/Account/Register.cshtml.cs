@@ -41,7 +41,7 @@ namespace IdentityUsers.Pages
 
             if (ModelState.IsValid)
             {
-                var user = new ApplicationUser()
+                var user = new ApplicationUser
                 {
                     UserName = Input.Email,
                     FirstName = "First",

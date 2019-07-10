@@ -13,9 +13,5 @@ namespace IdentityUsers.Models
         [StringLength(50)]
         public string LastName { get; set; }
 
-        public static explicit operator ApplicationUser(Task<ApplicationUser> v)
-        {
-            throw new NotImplementedException();
-        }
     }
 }

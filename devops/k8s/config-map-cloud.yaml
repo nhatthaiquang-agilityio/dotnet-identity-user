@@ -3,7 +3,7 @@ kind: ConfigMap
 metadata:
   name: externalcfg
 data:
-  ConnectionString: Server=sql-data;Initial Catalog=master;User Id=sa;Password=Your_password123;
+  ConnectionString: Server=sql-data;Initial Catalog=chatapp;User Id=sa;Password=Your_password123;
   UseAzureSignalR: "True"
   Azure__SignalR__ConnectionString: Endpoint=https://[instance-name].service.signalr.net;AccessKey=[your-assess-key];Version=1.0;
   ASPNETCORE_ENVIRONMENT: Development
